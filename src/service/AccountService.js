@@ -49,10 +49,10 @@ class AccountService {
         return serviceAccount;
     }
 
-    login(account) {
+    async login(account) {
         const {username, password} = account;
         const serviceAccount = this.#accounts[username];
-        this.checkLogin(serviceAccount, password);
+        await this.checkLogin(serviceAccount, password);
         return JwtUtils.getJwt(this.#accounts[account.username]);
     }
 
@@ -61,8 +61,8 @@ class AccountService {
         delete this.#accounts[username];
     }
 
-    checkLogin(serviceAccount, password) {
-        if (!serviceAccount || !bcrypt.compareSync(password, serviceAccount.hashPassword)) {
+    async checkLogin(serviceAccount, password) {
+        if (!serviceAccount || ! await bcrypt.compare(password, serviceAccount.hashPassword)) {
             throw createError(400, "wrong credential");
         }
         if (new Date().getTime() > serviceAccount.expiration) {

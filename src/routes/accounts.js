@@ -4,6 +4,7 @@ import { schemaAccount, schemaGetAccount } from "../validation/schemas.js";
 import accountService from "../service/accountService.js";
 import { checkAuthentication } from "../middleware/auth.js";
 import accountsPaths from "../paths/accountsPaths.js";
+import asyncHandler from "express-async-handler";
 
 const accountsRouter = express.Router();
 accountsRouter.use(checkAuthentication(accountsPaths));
@@ -24,10 +25,10 @@ accountsRouter.get("/", valitator(schemaGetAccount), (req, res) => {
     const account = accountService.getAccount(req.body.username);
     res.status(200).send(account);
 });
-accountsRouter.post("/login", (req, res) => {
-    const token = accountService.login(req.body);
+accountsRouter.post("/login", asyncHandler(async (req, res) => {
+    const token = await accountService.login(req.body);
     res.status(200).send(token);
-});
+}));
 accountsRouter.delete("/", valitator(schemaGetAccount), (req, res) => {
     accountService.removeAccount(req.body.username);
     res.status(200).send("account deleted");

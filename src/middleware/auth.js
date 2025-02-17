@@ -5,14 +5,14 @@ import accountService from "../service/accountService.js";
 const BEARER = "Bearer ";
 const BASIC = "Basic ";
 
-export function authenticate(paths) {
-    return (req, res, next) => {
+export function authenticate() {
+    return async (req, res, next) => {
         const authHeader = req.header("Authorization");
         if (authHeader) {
             if (authHeader.startsWith(BEARER)) {
                 jwtAuthentication(req, authHeader);
             } else if (authHeader.startsWith(BASIC)) {
-                basicAuthentication(req, authHeader);
+                await basicAuthentication(req, authHeader);
             }
         }
         next();
@@ -30,7 +30,7 @@ function jwtAuthentication(req, authHeader) {
     }
 }
 
-function basicAuthentication(req, authHeader) {
+async function basicAuthentication(req, authHeader) {
     const userNamePasswordBase64 = authHeader.substring(BASIC.length);
     const userNamePassword = Buffer.from(userNamePasswordBase64, "base64").toString("utf-8");
     const [username, password] = userNamePassword.split(":");
@@ -39,7 +39,7 @@ function basicAuthentication(req, authHeader) {
             req.role = "";
         } else {
             const serviceAccount = accountService.getAccount(username);
-            accountService.checkLogin(serviceAccount, password);
+            await accountService.checkLogin(serviceAccount, password);
             req.role = serviceAccount.role;
         }
         req.user = username;
