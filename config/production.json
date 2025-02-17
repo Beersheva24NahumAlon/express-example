@@ -1,0 +1,6 @@
+{
+    "morgan" : {
+        "type": "combined",
+        "stream": "logs/log.txt"
+    }
+}

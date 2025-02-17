@@ -1,5 +1,5 @@
 {
-  "name": "express",
+  "name": "express-introduction",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,13 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "config": "^3.3.12",
     "express": "^4.21.2",
+    "express-introduction": "file:",
     "joi": "^17.13.3",
+    "joi-password": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0"
   }
 }
