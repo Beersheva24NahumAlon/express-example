@@ -26,7 +26,7 @@ function jwtAuthentication(req, authHeader) {
         req.user = payload.sub;
         req.role = payload.role;
         req.authType = "jwt";
-    } catch (error) { 
+    } catch (error) {
     }
 }
 
@@ -34,23 +34,28 @@ async function basicAuthentication(req, authHeader) {
     const userNamePasswordBase64 = authHeader.substring(BASIC.length);
     const userNamePassword = Buffer.from(userNamePasswordBase64, "base64").toString("utf-8");
     const [username, password] = userNamePassword.split(":");
+
     try {
-        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-            req.role = "";
+        if (username === process.env.ADMIN_USERNAME) {
+            if (password === process.env.ADMIN_PASSWORD) {
+                req.user = process.env.ADMIN_USERNAME;
+                req.role = "";
+                req.authType = "basic";
+            }
         } else {
             const serviceAccount = accountService.getAccount(username);
             await accountService.checkLogin(serviceAccount, password);
+            req.user = username;
             req.role = serviceAccount.role;
+            req.authType = "basic";
         }
-        req.user = username;
-        req.authType = "basic";
-    } catch (error) {
+    } catch (error) { 
     }
 }
 
 export function checkAuthentication(paths) {
     return (req, res, next) => {
-        const {authentication, authorization} = paths[req.method];
+        const { authentication, authorization } = paths[req.method];
         if (!authorization) {
             throw createError(500, "security configuration not provided");
         }
