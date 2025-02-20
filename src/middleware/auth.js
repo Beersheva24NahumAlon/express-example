@@ -1,6 +1,6 @@
 import { createError } from "../errors/errors.js";
 import JwtUtils from "../security/JwtUtils.js";
-import accountService from "../service/accountService.js";
+import accountService from "../service/AccountServiceMongo.js";
 
 const BEARER = "Bearer ";
 const BASIC = "Basic ";
@@ -43,7 +43,7 @@ async function basicAuthentication(req, authHeader) {
                 req.authType = "basic";
             }
         } else {
-            const serviceAccount = accountService.getAccount(username);
+            const serviceAccount = await accountService.getAccount(username);
             await accountService.checkLogin(serviceAccount, password);
             req.user = username;
             req.role = serviceAccount.role;

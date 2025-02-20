@@ -42,17 +42,13 @@ class AccountServiceMongo {
     }
 
     async updateAccount(account) {
-        // const mongoAccount = await this.#accounts.findOneAndUpdate(
-        //     { _id: account.username }, 
-        //     { $set: convertToMongoAccount(account) }, 
-        //     { returnDocument: "after" }
-        // );
-        // this.#throwNotFound(id, mongoAccount);
-        // return convertFromMongoAccount(mongoAccount);
-
-        // const username = account.username;
-        // const serviceAccount = this.getAccount(username);
-        // this.#updatePassword(serviceAccount, account.password);
+        const serviceAccount = await this.getAccount(account.username);
+        this.#updatePassword(serviceAccount, account.password);
+        const mongoAccount = await this.#accounts.findOneAndUpdate(
+            { _id: account.username }, 
+            { $set: convertToMongoAccount(serviceAccount) }, 
+            { returnDocument: "after" }
+        );
     }
 
     async getAccount(username) {
@@ -85,9 +81,8 @@ class AccountServiceMongo {
         if (bcrypt.compareSync(password, serviceAccount.hashPassword)) {
             throw createError(400, `the new password should be diffenet from the existing one`);
         }
-        const hashPassword = bcrypt.hashSync(password, config.get("accounting.salt_rounds"));
-        const expiration = getExpiration();
-        return {hashPassword, expiration};
+        serviceAccount.hashPassword = bcrypt.hashSync(password, config.get("accounting.salt_rounds"));
+        serviceAccount.expiration = getExpiration();
     }
 
     #toServiceAccount(account, role) {
