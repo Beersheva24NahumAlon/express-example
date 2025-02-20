@@ -5,7 +5,7 @@ import { expressValidator } from "../middleware/validation.js";
 import { schemaPost, schemaPut } from "../validation/schemas.js";
 import coursesRouterAsync from "../routes/coursesAsync.js";
 import accountsRouterAsync from "../routes/accountsAsync.js";
-import { authenticate } from "../middleware/auth.js";
+import { authenticate } from "../middleware/authMongo.js";
 
 //constants
 const port = process.env.PORT ?? 3500

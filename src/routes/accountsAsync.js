@@ -2,7 +2,7 @@ import express from "express";
 import { valitator } from "../middleware/validation.js";
 import { schemaAccount, schemaGetAccount } from "../validation/schemas.js";
 import accountService from "../service/AccountServiceMongo.js";
-import { checkAuthentication } from "../middleware/auth.js";
+import { checkAuthentication } from "../middleware/authMongo.js";
 import accountsPaths from "../paths/accountsPaths.js";
 import asyncHandler from "express-async-handler";
 

@@ -59,9 +59,9 @@ class AccountServiceMongo {
 
     async login(account) {
         const { username, password } = account;
-        const serviceAccount = this.#accounts[username];
+        const serviceAccount = await this.getAccount(username);
         await this.checkLogin(serviceAccount, password);
-        return JwtUtils.getJwt(this.#accounts[account.username]);
+        return JwtUtils.getJwt(serviceAccount);
     }
 
     async removeAccount(username) {
